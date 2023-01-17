@@ -1,0 +1,13 @@
+$if boolean = undefined then
+$let boolean = defined
+
+' True Value
+'___
+' - const | datatype: integer | Value -1
+const TRUE = -1
+' False Value
+'___
+' - const | datatype: integer | Value 0
+const FALSE = 0
+
+$end if

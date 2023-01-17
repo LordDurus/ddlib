@@ -1,0 +1,282 @@
+
+'$INCLUDE:'.\Constants.bi'
+
+$if stringFunctions = undefined then
+$let stringFunctions = defined
+
+' Replaces all occurrences of a string with another string.
+'___
+' - @param {string} baseString String in which characters are replaced
+' - @param {string} search Characters which are replaced
+' - @param {string} replacement Replacement string
+function string.ReplaceAll$(baseString as string, search as string, replacement as string)
+	string.ReplaceAll$ = string.Replace$(baseString, search, replacement, - 1)
+end function
+' ----------------------------------------------------------------------------
+' Replaces a string with another string.
+'___
+' - @param {string} baseString String in which characters are replaced
+' - @param {string} search Characters which are replaced
+' - @param {string} replacement Replacement string
+' - @param {integer} count Value specifying how many times starting on the left side (-1 or all)
+' - @return STRING with replacements.
+function string.Replace$(baseString as string, search as string, replacement as string, count as integer)
+	dim retvalue as string : retvalue = baseString
+	dim postion as integer : postion = 0
+	if count = -1 then
+		do
+			retvalue = string.ReplaceFirst$(retvalue, search, replacement)
+			postion = instr(retvalue, search)
+		loop until postion = 0
+	else
+		do
+			retvalue = string.ReplaceFirst$(baseString, search, replacement)
+			postion = instr(retvalue, search)
+			count = count - 1
+		loop until postion = 0 or count = 0
+	end if
+	string.Replace$ = retvalue
+end function
+' ----------------------------------------------------------------------------
+' Replaces a string with another string one time.
+'___
+' - @param {string} baseString String in which characters are replaced.
+' - @param {string} search Characters which are replaced.
+' - @param {string} replacement Replacement string.
+' - @return STRING with replacement.
+function string.ReplaceFirst$(baseString as string, search as string, replacement as string)
+	dim postion as integer : postion = instr(baseString, search)
+	if postion then
+		dim retvalue as string
+		dim length as integer : length = len(baseString)
+		retvalue = left$(baseString, postion - 1) + right$(baseString, length - postion-len(search) + 1)
+		string.ReplaceFirst$ = left$(retvalue, postion - 1) + replacement + right$(retvalue, length - postion)
+	else
+		string.ReplaceFirst$ = baseString
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Gets a BASE64 string from a passed string.
+'
+' Wiki: https://en.wikipedia.org/wiki/Base64
+'
+' In computer programming, Base64 is a group of binary-to-text encoding schemes that represent binary data (more specifically, a sequence of 8-bit bytes) in sequences of 24 bits that can be represented by four 6-bit Base64 digits.
+'
+' Common to all binary-to-text encoding schemes, Base64 is designed to carry data stored in binary formats across channels that only reliably support text content. Base64 is particularly prevalent on the World Wide Web[1] where one of its uses is the ability to embed image files or other binary assets inside textual assets such as HTML and CSS files.[2]
+'
+' The code is taken stright from here
+' https://github.com/visionmercer/qb64-include/blob/main/btoa.bm
+'___
+' - @returns {string} strng If true (-1) if initialize result was se
+function string.ToBase64$(strng as string)
+	const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	dim c1 as _unsigned _byte
+	dim c2 as _unsigned _byte
+	dim c3 as _unsigned _byte
+	dim t1 as _unsigned _byte
+	dim t2 as _unsigned _byte
+	dim t3 as _unsigned _byte
+	dim t4 as _unsigned _byte
+	dim i as long
+	dim buffer as string
+	
+	for i = 1 to len(strng) step 3
+		c1 = asc(mid$(strng, i, 1))
+		t1 = _shr((c1), 2)
+		buffer = buffer + mid$(b64, t1 + 1, 1)
+		if len(strng) >= i + 1 then
+			c2 = asc(mid$(strng, i + 1, 1))
+			t2 = (_shl((c1 and &b00000011), 4)) or (_shr((c2), 4))
+			buffer = buffer + mid$(b64, t2 + 1, 1)
+		else
+			t2 = (_shl((c1 and &b00000011), 4))
+			buffer = buffer + mid$(b64, t2 + 1, 1)
+			buffer = buffer + "=="
+			string.ToBase64$ = buffer
+			exit function
+		end if
+		if len(strng) >= i + 2 then
+			c3 = asc(mid$(strng, i + 2, 1))
+			t3 = (_shl((c2 and &b00001111), 2)) or (_shr((c3), 6))
+			buffer = buffer + mid$(b64, t3 + 1, 1)
+			t4 = c3 and &b00111111
+			buffer = buffer + mid$(b64, t4 + 1, 1)
+		else
+			t3 = (_shl((c2 and &b00001111), 2))
+			buffer = buffer + mid$(b64, t3 + 1, 1)
+			buffer = buffer + "="
+			string.ToBase64$ = buffer
+			exit function
+		end if
+	next
+	string.ToBase64$ = buffer
+end function
+' ----------------------------------------------------------------------------
+' Indicates whether the specified string is null or an empty string ("").
+'___
+' - @param {string} stringValue The string to check
+' - @returns {int} -1 for True 0 for False
+function string.IsNullOrEmpty(stringValue as string)
+	if stringValue = string.Empty or stringValue = chr$(0) then
+		string.IsNullOrEmpty = BOOLEAN.TRUE
+	else
+		string.IsNullOrEmpty = BOOLEAN.FALSE
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Indicates whether a specified string is null, empty, or consists only of white-space characters.
+'___
+' - @param {string} stringValue The string to check
+' - @returns {int} -1 for True 0 for False
+function string.IsNullOrWhiteSpace(stringValue as string)
+	if string.Alltrim(stringValue) = string.Empty or stringValue = chr$(0) then
+		string.IsNullOrWhiteSpace = BOOLEAN.TRUE
+	else
+		string.IsNullOrWhiteSpace = BOOLEAN.FALSE
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Returns a new string in which all leading and trailing space are removed.
+'___
+' - @param {string} stringValue The string to AllTrim
+' - @returns {string} stringValue with leading and traing spaces removed.
+function string.AllTrim$(stringValue as string)
+	string.AllTrim$ = ltrim$(rtrim$(stringValue))
+end function
+' ----------------------------------------------------------------------------
+' Does a string start with another string
+'___
+' - @param {string} stringValue The string that is searched.
+' - @param {string} searchValue The string that is searched for.
+' - @returns {int} -1 for True 0 for False
+function string.StartsWith(stringValue as string, searchValue as string)
+	dim valueLen as integer : valueLen = len(stringValue)
+	dim searchLen as integer : searchLen = len(searchValue)
+	if valueLen = 0 and searchLen = 0 then
+		string.StartsWith = BOOLEAN.TRUE
+	elseif searchLen < 1 then
+		string.StartsWith = BOOLEAN.FALSE
+	elseif len(searchValue) < 1 then
+		string.StartsWith = BOOLEAN.TRUE
+	else
+		if left$(stringValue, searchLen) = searchValue then
+			string.StartsWith = BOOLEAN.TRUE
+		else
+			string.StartsWith = BOOLEAN.FALSE
+		end if
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Does a string end with another string
+'___
+' - @param {string} stringValue The string that is searched.
+' - @param {string} searchValue The string that is searched for.
+' - @returns {int} -1 for True 0 for False
+function string.EndsWith(stringValue as string, searchValue as string)
+	dim valueLen as integer : valueLen = len(stringValue)
+	dim searchLen as integer : searchLen = len(searchValue)
+	if valueLen = 0 and searchLen = 0 then
+		string.EndsWith = BOOLEAN.TRUE
+	elseif valueLen < 1 then
+		string.EndsWith = BOOLEAN.FALSE
+	elseif len(searchValue) < 1 then
+		string.EndsWith = BOOLEAN.TRUE
+	else
+		if right$(stringValue, searchLen) = searchValue then
+			string.EndsWith = BOOLEAN.TRUE
+		else
+			string.EndsWith = BOOLEAN.FALSE
+		end if
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Returns an integer indicating whether a specified character occurs within this string.
+'___
+' - @param {string} stringValue The string that is searched.
+' - @param {string} searchValue The string that is searched for.
+' - @returns {int} -1 for True 0 for False
+function string.Contains(stringValue as string, searchValue as string)
+	if instr(stringValue, searchValue) > 0 then
+		string.Contains = BOOLEAN.TRUE
+	else
+		string.Contains = BOOLEAN.FALSE
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Removes leading spaces and tabs from a string
+'___
+' - @param {string} basestring The string to remove the leading white space from a string
+function string.TrimLeadingWhiteSpace$(baseString as string)
+	dim work as string : work = rtrim$(baseString)
+	if len(baseString) < 1 then
+		string.TrimLeadingWhiteSpace$ = work
+		exit function
+	end if
+	
+	dim i as integer
+	for i = 1 to len(work)
+		if mid$(work, i, 1) <> chr$(9) or mid$(work, i, 1) <> chr$(32) then
+			exit for
+		end if
+	next i
+	
+	if i + 1 < len(baseString) then
+		dim retvalue as string : retvalue = mid$(work, i)
+		string.TrimLeadingWhiteSpace$ = retvalue
+	end if
+	
+end function
+' ----------------------------------------------------------------------------
+' Returns the number of times a character expression occurs within another character expression.
+'___
+' - @param {string} stringValue The string that is searched.
+' - @param {string} searchValue The string that is searched for.
+function string.Occurrs(stringValue as string, searchValue as string)
+	dim occurrences as _unsigned integer : occurrences = 0
+	dim postion as _unsigned integer : postion = instr(stringValue, searchValue)
+	do while postion > 0
+		occurrences = occurrences + 1
+		postion = instr(postion + len(searchValue), stringValue, searchValue)
+	loop
+	string.Occurrs = occurrences
+end function
+' ----------------------------------------------------------------------------
+' Returns a string array that contains the substrings that are delimited by elements of a specified string.
+' Not the contents of the array will be removed.
+' A zero sized array will be returned if there a no occurrences.
+'___
+' - @param {string array} stringArrray The array that will contain the "split" values
+' - @param {string} stringValue The string to remove the leading white space from a string
+' - @param {delimiter} The strings that delimit the substrings in this string, in empty then "," is used.
+sub string.Split(stringArrray() as string, stringValue as string, delimiter as string)
+	
+	if len(delimiter) < 1 then
+		delimiter = ","
+	end if
+	
+	dim occurrences as integer : occurrences = string.Occurrs(stringValue, delimiter)
+	redim stringArrray(1 to occurrences)
+	
+	if occurrences = int.EMPTY then
+		exit sub
+	end if
+	
+	dim postion as _unsigned integer : postion = 1
+	dim index as _unsigned integer : index = int.EMPTY
+	dim delLenght as _unsigned integer : delLenght = len(delimiter)
+	
+	do
+		index = index + 1
+		if postion >= len(delLenght) then
+			exit do
+		end if
+		postion = instr(postion, stringValue, delimiter)
+		if postion > int.EMPTY then
+			postion = postion + delLenght
+			stringArrray(index) = mid$(stringValue, postion + 1)
+		end if
+	loop until postion = int.EMPTY
+	
+end sub
+
+$end if

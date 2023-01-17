@@ -1,0 +1,180 @@
+
+
+$if GetSha1 = undefined then
+$let GetSha1 = defined
+
+' This code was swiped from
+' https://www.tapatalk.com/groups/qbasic/sha-1-in-qbasic-t34573.html
+' I changed the types to use the types available in Qb64
+
+
+'Adds two 32 bit unsigned integers, ignoring the carry beyond the 32nd bit
+'l0 is one of the addends. l1 is another of the addends. The result is
+'returned by the function.
+function sha1.Add32&(l0 as long, l1 as long)
+	
+	dim l2 as long, p as long
+	dim carry, i, t
+	
+	p = 1
+	for i = 0 to 31
+		t = ((l0 and p) <> 0) + ((l1 and p) <> 0) + carry
+		l2 = l2 or (((t and 1) > 0) and p)
+		carry = t < -1
+		if i >= 30 then p = &h80000000 else p = p + p
+	next i
+	
+	sha1.Add32& = l2
+end function
+' ----------------------------------------------------------------------------
+' This function converts a big-endian 32 bit string into a 32 bit integer.
+' - See for details: https://microsoft.github.io/language-server-protocol/specifications/specification-3-16/#serverCapabilities
+'___
+' - @returns {string} t is the string. the function returns the integer.
+function sha1.BigEndian32From&(t as string)
+	dim l as long
+	dim n as long
+	
+	n = asc(mid$(t, 1, 1))
+	l = (n and &h7f) * &h1000000
+	l = l or (&h80000000 and ((n and &h80) > 0))
+	l = l or (asc(mid$(t, 2, 1)) * &h10000)
+	l = l or (asc(mid$(t, 3, 1)) * &h100&)
+	l = l or asc(mid$(t, 4, 1))
+	
+	sha1.BigEndian32From& = l
+end function
+' ----------------------------------------------------------------------------
+' This function a converts 32 bit integer into a big-endian 32 bit string.
+' ___
+' - @returns {string} l is the 32 bit integer. the function returns the 4 byte string.
+function sha1.BigEndian32To$(l as long)
+	sha1.BigEndian32To$ = chr$(((l and &hff000000) \ &h1000000) and &hff) + chr$((l and &hff0000) \ &h10000) + chr$((l and &hff00&) \ &h100) + chr$(l and &hff)
+end function
+' ----------------------------------------------------------------------------
+' Returns a string expressed in hex
+' ___
+' - @returns {string} t string
+function sha1.Hexs$(t as string)
+	dim i as _unsigned integer
+	dim n as string
+	dim s as string
+	for i = 1 to len(t)
+		n = hex$(asc(mid$(t, i, 1)))
+		if len(n) < 2 then
+			n = "0" + n
+		end if
+		s = s + n
+	next i
+	sha1.Hexs$ = s
+end function
+' ----------------------------------------------------------------------------
+'Rotates (not shifts) left a 32 bit integer. l0 is the number to rotate. n is
+'the extent of rotation. The result is returned by the function.
+function sha1.RotateLeft32&(l0 as long, n as integer)
+	
+	dim l1 as long
+	dim p0 as long
+	dim p1 as long
+	dim i0, i1
+	
+	i1 = n and 31
+	p0 = 1
+	if i1 = 31 then p1 = &h80000000 else p1 = 2 ^ i1
+	for i0 = 0 to 31
+		l1 = l1 or (((l0 and p0) <> 0) and p1)
+		if i0 >= 30 then p0 = &h80000000 else p0 = p0 + p0
+		select case i1
+			case 30 : p1 = &h80000000
+			case 31 : p1 = 1
+			case else : p1 = p1 + p1
+		end select
+		i1 = i1 + 1
+	next i0
+	
+	sha1.RotateLeft32& = l1
+end function
+' ----------------------------------------------------------------------------
+' This function calculates the SHA-1 hash for a given string.
+' text is the given string. the function returns the hash as a 20 byte string.
+' This code was created by modifying the pseudocode at
+' http://en.wikipedia.org/wiki/SHA_hash_functions
+function sha1.GetValue$(text as string)
+	
+	dim ln as integer, ind as integer
+	dim h0 as long, h1 as long, h2 as long, h3 as long, h4 as long
+	dim a as long, b as long, c as long, d as long, e as long
+	dim f as long, k as long, temp as long
+	dim w(0 to 79) as long, i as integer
+	dim thisChunk as _unsigned integer
+	
+	h0 = &h67452301
+	h1 = &hefcdab89
+	h2 = &h98badcfe
+	h3 = &h10325476
+	h4 = &hc3d2e1f0
+	
+	ln = len(text$)
+	dim chunk(0 to(ln + 7) \ 64) as string * 64
+	
+	for ind = 0 to ln - 1
+		mid$(chunk(ind \ 64),(ind and 63) + 1, 1) = mid$(text, ind + 1, 1)
+	next ind
+	
+	mid$(chunk(ind \ 64),(ind and 63) + 1, 1) = chr$(&h80)
+	
+	for ind = ((ind + 1) and 63) + 1 to 60
+		mid$(chunk(ubound(chunk)), ind, 1) = chr$(0)
+	next ind
+	mid$(chunk(ubound(chunk)), 61, 4) = BigEndian32To$(ln * 8&)
+	
+	for thisChunk = 0 to ubound(chunk)
+		for ind = 0 to 15
+			w(ind) = sha1.BigEndian32From&(mid$(chunk(thisChunk),(ind * 4) + 1, 4))
+		next ind
+		'Extend the sixteen 32-bit words into eighty 32-bit words:
+		for i = 16 to 79
+			w(i) = RotateLeft32&((w(i - 3) xor w(i - 8) xor w(i-14) xor w(i-16)), 1)
+		next i
+		
+		a = h0
+		b = h1
+		c = h2
+		d = h3
+		e = h4
+		
+		for i = 0 to 79
+			select case i
+				case 0 to 19
+					f = (b and c) or ((not b) and d)
+					k = &h5a827999
+				case 20 to 39
+					f = b xor c xor d
+					k = &h6ed9eba1
+				case 40 to 59
+					f = (b and c) or (b and d) or (c and d)
+					k = &h8f1bbcdc
+				case 60 to 79
+					f = b xor c xor d
+					k = &hca62c1d6
+			end select
+			
+			temp = Add32&(RotateLeft32&(a, 5), Add32&(f, Add32&(e, Add32&(k, w(i)))) )
+			e = d
+			d = c
+			c = RotateLeft32&(b, 30)
+			b = a
+			a = temp
+		next i
+		
+		h0 = Add32&(h0, a)
+		h1 = Add32&(h1, b)
+		h2 = Add32&(h2, c)
+		h3 = Add32&(h3, d)
+		h4 = Add32&(h4, e)
+	next thisChunk
+	
+	sha1.GetValue$ = BigEndian32To$(h0) + BigEndian32To$(h1) + BigEndian32To$(h2) + BigEndian32To$(h3) + BigEndian32To$(h4)
+end function
+
+$end if

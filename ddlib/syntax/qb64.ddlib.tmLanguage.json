@@ -1,0 +1,16 @@
+{
+	"patterns": [
+		{
+			"match": "(?i:\\b(string.empty|string.Replace|string.ReplaceAll)\\b",
+			"name": "qb64.ddlib.string"
+		},
+		{
+			"match": "(?i:\\b(int.Empty)\\b",
+			"name": "qb64.ddlib.int"
+		},
+		{
+			"match": "(?i:\\b(path.AddSlash|path.FixSlashes)\\b",
+			"name": "qb64.ddlib.path"
+		}
+	]
+}
