@@ -1,0 +1,16 @@
+{
+	"patterns": [
+		{
+			"match": "(?i:\\b(string.empty|string.Replace|string.ReplaceAll)\\b",
+			"name": "ddlib.string"
+		},
+		{
+			"match": "(?i:\\b(int.Empty)\\b",
+			"name": "ddlib.int"
+		},
+		{
+			"match": "(?i:\\b(path.AddSlash|path.FixSlashes)\\b",
+			"name": "ddlib.path"
+		}
+	]
+}

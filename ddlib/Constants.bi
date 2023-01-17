@@ -1,5 +1,5 @@
-$if ddlibBoolean = undefined then
-$let ddlibBoolean = defined
+$if ddlibConstants = undefined then
+$let ddlibConstants = defined
 
 ' True Value
 '___

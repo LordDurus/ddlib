@@ -1,0 +1,31 @@
+' TODO: Log results to a file
+
+$if testprint = undefined then
+$let testprint = define
+
+
+
+' Prints a successful message to the screen.
+'___
+' - @param {string} methodName Name of the subroutine or functions that was successful.
+sub print.Success(methodName as string)
+	color _rgb(170, 170, 170)
+	print methodName + ": ";
+	color _rgb(0, 128, 0)
+	print "Successful"
+	color _rgb(170, 170, 170)
+end sub
+' ----------------------------------------------------------------------------
+' Prints a failed message to the screen.
+'___
+' - @param {string} methodName Name of the subroutine or functions that was failed.
+sub print.Fail(methodName as string)
+	color _rgb(170, 170, 170)
+	print methodName + ": ";
+	color _rgb(255, 0, 0)
+	print "Failed"
+	color _rgb(170, 170, 170)
+end sub
+' ----------------------------------------------------------------------------
+
+$end if

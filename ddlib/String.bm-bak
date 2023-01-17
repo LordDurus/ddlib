@@ -1,8 +1,8 @@
 
 '$INCLUDE:'.\Constants.bi'
 
-$if stringFunctions = undefined then
-$let stringFunctions = defined
+$if ddlibStringFunctions = undefined then
+$let ddlibStringFunctions = defined
 
 ' Replaces all occurrences of a string with another string.
 '___
@@ -26,6 +26,7 @@ function string.Replace$(baseString as string, search as string, replacement as 
 	if count = -1 then
 		do
 			retvalue = string.ReplaceFirst$(retvalue, search, replacement)
+			' print "retvalue = " + retvalue
 			postion = instr(retvalue, search)
 		loop until postion = 0
 	else
@@ -41,16 +42,21 @@ end function
 ' Replaces a string with another string one time.
 '___
 ' - @param {string} baseString String in which characters are replaced.
-' - @param {string} search Characters which are replaced.
+' - @param {string} searchValue Characters which are replaced.
 ' - @param {string} replacement Replacement string.
 ' - @return STRING with replacement.
-function string.ReplaceFirst$(baseString as string, search as string, replacement as string)
-	dim postion as integer : postion = instr(baseString, search)
+function string.ReplaceFirst$(baseString as string, searchValue as string, replacement as string)
+	dim postion as integer : postion = instr(baseString, searchValue)
+	print "baseString = " + baseString
+	print "searchValue = " + searchValue
+	print "postion = " + str$(postion)
 	if postion then
-		dim retvalue as string
 		dim length as integer : length = len(baseString)
-		retvalue = left$(baseString, postion - 1) + right$(baseString, length - postion-len(search) + 1)
-		string.ReplaceFirst$ = left$(retvalue, postion - 1) + replacement + right$(retvalue, length - postion)
+		print "left = " + left$(baseString, postion - 1)
+		print "right = " + right$(baseString, length - postion-len(searchValue) + 1)
+		print "mid = " + mid$(baseString, postion + len(searchValue))
+		dim retvalue as string : retvalue = left$(baseString, postion - 1) + right$(baseString, length - postion-len(searchValue) + 1)
+		string.ReplaceFirst$ = left$(retvalue, postion - 1) + replacement + mid$(baseString, postion + len(searchValue))
 	else
 		string.ReplaceFirst$ = baseString
 	end if
@@ -267,7 +273,7 @@ sub string.Split(stringArrray() as string, stringValue as string, delimiter as s
 	
 	do
 		index = index + 1
-		if postion >= len(delLenght) then
+		if postion >= len(stringValue) then
 			exit do
 		end if
 		postion = instr(postion, stringValue, delimiter)
