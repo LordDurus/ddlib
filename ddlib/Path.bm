@@ -1,4 +1,4 @@
-'$INCLUDE:'..\ddlib\String.bm'
+'$INCLUDE:'..\ddlib\string.bm'
 
 $if path = undefined then
 $let path = defined

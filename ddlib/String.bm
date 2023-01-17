@@ -1,5 +1,5 @@
 
-'$INCLUDE:'.\Constants.bi'
+'$INCLUDE:'.\constants.bi'
 
 $if ddlibStringFunctions = undefined then
 $let ddlibStringFunctions = defined
