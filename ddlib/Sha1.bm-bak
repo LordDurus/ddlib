@@ -1,5 +1,3 @@
-
-
 $if GetSha1 = undefined then
 $let GetSha1 = defined
 

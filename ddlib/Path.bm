@@ -3,6 +3,7 @@
 $if path = undefined then
 $let path = defined
 
+' ----------------------------------------------------------------------------
 ' Adds a slash (if needed) to a path expression.
 '___
 ' @param {string} path Specifies the path to which to add the slash (checks the operating system)
@@ -19,7 +20,7 @@ function path.AddSlash$(path as string)
 	end if
 	path.AddSlash$ = retvalue
 end function
-
+' ----------------------------------------------------------------------------
 ' Changes the slashes based on the operating system
 ' - LINUS & OSX = "/"
 ' - WINDOWS = "\\"

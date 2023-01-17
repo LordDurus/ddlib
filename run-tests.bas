@@ -10,7 +10,7 @@ on error goto errorhandler
 '$INCLUDE:'.\ddlib\Constants.bi'
 
 call test.Strings
-'call test.Path
+call test.Path
 
 close 0 ' close anything left open
 end 0
@@ -24,4 +24,5 @@ end 1
 ' ----------------------------------------------------------------------------
 '$INCLUDE:'.\ddlib\String.bm'
 '$INCLUDE:'.\test-print.bm'
-'$INCLUDE:'.\tests-strings.bas'
+'$INCLUDE:'.\test-string.bas'
+'$INCLUDE:'.\test-path.bas'
