@@ -9,8 +9,9 @@ _title "DDLIB Tester"
 on error goto errorhandler
 '$INCLUDE:'.\ddlib\Constants.bi'
 
-call test.Strings
+call test.Directory
 call test.Path
+call test.Strings
 
 close 0 ' close anything left open
 end 0
@@ -24,5 +25,6 @@ end 1
 ' ----------------------------------------------------------------------------
 '$INCLUDE:'.\ddlib\String.bm'
 '$INCLUDE:'.\test-print.bm'
-'$INCLUDE:'.\test-string.bas'
-'$INCLUDE:'.\test-path.bas'
+'$INCLUDE:'.\test-directory.bm'
+'$INCLUDE:'.\test-path.bm'
+'$INCLUDE:'.\test-string.bm'

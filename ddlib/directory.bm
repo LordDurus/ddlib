@@ -1,0 +1,29 @@
+
+'$INCLUDE:'.\constants.bi'
+
+$if ddlibDirectory = undefined then
+$let ddlibDirectory = define
+
+' ----------------------------------------------------------------------------
+' Determines whether the given path refers to an existing directory on disk.
+'___
+' - @param {string} path The path to test
+function directory.Exists(path as string)
+	if _direxists(path) then
+		directory.Exists = boolean.TRUE
+	else
+		directory.Exists = boolean.FALSE
+	end if
+end function
+' ----------------------------------------------------------------------------
+' Creates the passed directory.
+'___
+' - @param {string} path The directory to create.
+function directory.CreateDirectory(path as string)
+	if not directory.Exists(path) then
+		mkdir path
+	end if
+	directory.CreateDirectory = directory.Exists(path)
+end function
+
+$end if

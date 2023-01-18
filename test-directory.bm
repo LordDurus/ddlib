@@ -1,0 +1,20 @@
+'$INCLUDE:'.\ddlib\constants.bi'
+'$INCLUDE:'.\ddlib\directory.bm'
+'$INCLUDE:'.\test-print.bm'
+' ----------------------------------------------------------------------------
+sub test.Directory
+	
+	call test.Exists
+	
+end sub
+' ----------------------------------------------------------------------------
+sub test.Exists
+	if instr(_os$,"[WINDOWS]") > 0 then
+		if directory.Exists("c:\windows") then
+			print.Success("directory.Exists")
+		else
+			print.Fail("directory.Exists")
+		end if
+	end if
+end sub
+' ----------------------------------------------------------------------------

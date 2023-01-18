@@ -1,5 +1,5 @@
-'$INCLUDE:'.\ddlib\Constants.bi'
-'$INCLUDE:'.\ddlib\String.bm'
+'$INCLUDE:'.\ddlib\constants.bi'
+'$INCLUDE:'.\ddlib\string.bm'
 '$INCLUDE:'.\test-print.bm'
 ' ----------------------------------------------------------------------------
 sub test.Strings
