@@ -16,7 +16,7 @@ function directory.Exists(path as string)
 	end if
 end function
 ' ----------------------------------------------------------------------------
-' Creates the passed directory.
+' Creates a new folder (directory) at a specified path.
 '___
 ' - @param {string} path The directory to create.
 function directory.CreateDirectory(path as string)
@@ -25,5 +25,14 @@ function directory.CreateDirectory(path as string)
 	end if
 	directory.CreateDirectory = directory.Exists(path)
 end function
+' ----------------------------------------------------------------------------
+' Deletes an empty directory using a designated path relative to the present path location.
+'___
+' - @param {string} path The directory to delete.
+sub directory.Delete(path as string)
+	if directory.Exists(path) then
+		rmdir path
+	end if
+end sub
 
 $end if

@@ -2,10 +2,14 @@
 '$INCLUDE:'.\ddlib\directory.bm'
 '$INCLUDE:'.\test-print.bm'
 ' ----------------------------------------------------------------------------
+function test.GetTestFolder$()
+	test.GetTestFolder$ = "c:\temp\dirtestfolder"
+end function
+' ----------------------------------------------------------------------------
 sub test.Directory
-	
 	call test.Exists
-	
+	call test.Delete
+	call test.CreateDirectory
 end sub
 ' ----------------------------------------------------------------------------
 sub test.Exists
@@ -18,3 +22,19 @@ sub test.Exists
 	end if
 end sub
 ' ----------------------------------------------------------------------------
+sub test.Delete
+	call directory.Delete(test.GetTestFolder$)
+	if directory.Exists(test.GetTestFolder$) then
+		print.Fail("directory.Delete")
+	else
+		print.Success("directory.Delete")
+	end if
+end sub
+' ----------------------------------------------------------------------------
+sub test.CreateDirectory
+	if directory.CreateDirectory(test.GetTestFolder$) then
+		print.Success("directory.CreateDirectory")
+	else
+		print.Fail("directory.CreateDirectory")
+	end if
+end sub
