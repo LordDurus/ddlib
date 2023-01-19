@@ -1,8 +1,8 @@
 
 '$INCLUDE:'.\constants.bi'
 
-$if ddlibFile = undefined then
-$let ddlibFile = defined
+$if ddlibfile = undefined then
+$let ddlibfile = defined
 
 ' ----------------------------------------------------------------------------
 'Creates a new file, write the contents to the file, and then closes the file. If the target file already exists, it is overwritten.
@@ -10,7 +10,7 @@ $let ddlibFile = defined
 ' - @param {string} path The file to write to.
 ' - @param {string} contents The string to write to the file.
 sub file.WriteAllText(path as string, contents as string)
-	dim fileHandle as integer : fileHandle = freefile : open path for output as #filehandle
+	dim filehandle as integer : filehandle = freefile : open path for output as #filehandle
 	print #filehandle, contents
 	close #filehandle
 end sub
@@ -20,11 +20,11 @@ end sub
 ' - @param {string} filepath The file to check.
 ' - @return Returns TRUE (-1) or FALSE (0).
 function file.Exists(filepath as string)
-	file.Exists = boolean.FALSE
+	file.Exists = boolean.false
 	if _fileexists(filepath) then
-		file.Exists = boolean.TRUE
+		file.Exists = boolean.true
 	else
-		file.Exists = boolean.FALSE
+		file.Exists = boolean.false
 	end if
 end function
 ' ----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ end function
 ' - @param {string} filepath The name of the file to be deleted. Wildcards * and ? can be used with caution.
 function file.Delete(filepath as string)
 	kill filepath
-	file.Delete = boolean.TRUE
+	file.Delete = boolean.true
 end function
 ' ----------------------------------------------------------------------------
 ' The OUTPUT file mode is used in an OPEN statement to send new data to files.\
@@ -43,40 +43,42 @@ end function
 '___
 ' - @param {string} File to open
 function file.OpenOutput(filepath as string)
-	dim fileHandle as integer : fileHandle = freefile : open filepath for output as #filehandle
-	file.OpenOutput = fileHandle
+	dim filehandle as integer : filehandle = freefile : open filepath for output as #filehandle
+	file.OpenOutput = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' OpenAppend is used in an output type OPEN statement to add data to the end of a file.
 ' ___
 ' - @param {string} File to open
 function file.OpenAppend(filepath as string)
-	dim fileHandle as integer : fileHandle = freefile : open filepath for append as #filehandle
-	file.OpenAppend = fileHandle
+	dim filehandle as integer : filehandle = freefile : open filepath for append as #filehandle
+	file.OpenAppend = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
 ' ___
 ' - @param {string} File to open
-function file.OpenRandom(filepath as string)
-	dim fileHandle as integer : fileHandle = freefile : open filepath for random as #filehandle
-	file.OpenRandom = fileHandle
+function file.OpenrRndom(filepath as string)
+	dim filehandle as integer : filehandle = freefile : open filepath for random as #filehandle
+	file.openrandom = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' CLOSE closes an open file or port using the number assigned in an `OPEN` statement.
 '___
 ' - @param {integer} fileHandle Indicates the file or list of file numbers to close. When not specified, all open files are closed.
-function file.Close(fileHandle as integer)
-	close fileHandle
-	file.Close = boolean.TRUE
+function file.close(filehandle as integer)
+	close filehandle
+	file.close = boolean.true
 end function
 ' ----------------------------------------------------------------------------
 ' Closes all open files.
-sub file.CLoseAll
-	dim i as integer
-	for i = 1 to freefile - 1
-		close i
-	next i
+sub file.CloseAll
+	dim currentfile as integer
+	dim lastfile as long : lastfile = freefile - 1
+	for currentfile = 1 to lastfile
+		close currentfile
+	next
 end sub
 ' ----------------------------------------------------------------------------
 $end if
+
