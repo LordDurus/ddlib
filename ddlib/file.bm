@@ -66,9 +66,9 @@ end function
 ' CLOSE closes an open file or port using the number assigned in an `OPEN` statement.
 '___
 ' - @param {integer} fileHandle Indicates the file or list of file numbers to close. When not specified, all open files are closed.
-function file.close(filehandle as integer)
+function file.Close(filehandle as integer)
 	close filehandle
-	file.close = boolean.true
+	file.Close = boolean.true
 end function
 ' ----------------------------------------------------------------------------
 ' Closes all open files.
