@@ -9,6 +9,7 @@ $let ddlibStringFunctions = defined
 ' - @param {string} baseString String in which characters are replaced
 ' - @param {string} search Characters which are replaced
 ' - @param {string} replacement Replacement string
+' - @return STRING with replacements.
 function string.ReplaceAll$(baseString as string, search as string, replacement as string)
 	string.ReplaceAll$ = string.Replace$(baseString, search, replacement, - 1)
 end function
@@ -19,7 +20,7 @@ end function
 ' - @param {string} search Characters which are replaced
 ' - @param {string} replacement Replacement string
 ' - @param {integer} count Value specifying how many times starting on the left side (-1 or all)
-' - @return STRING with replacements.
+' - @return STRING with a replacement.
 function string.Replace$(baseString as string, search as string, replacement as string, count as integer)
 	dim retvalue as string : retvalue = baseString
 	dim postion as integer : postion = 0

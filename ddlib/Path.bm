@@ -1,7 +1,7 @@
 '$INCLUDE:'..\ddlib\string.bm'
 
-$if path = undefined then
-$let path = defined
+$if ddlibPath = undefined then
+$let ddlibPath = defined
 
 ' ----------------------------------------------------------------------------
 ' Adds a slash (if needed) to a path expression.

@@ -10,21 +10,23 @@ on error goto errorhandler
 '$INCLUDE:'.\ddlib\Constants.bi'
 
 call test.Directory
+call test.File
 call test.Path
 call test.Strings
 
-close 0 ' close anything left open
+call file.CLoseAll
 end 0
 
 errorhandler:
-close 0 ' close anything left open
+call file.CLoseAll
 print _errormessage$ + " on line " + ltrim$(str$(_errorline)) + " in " + _inclerrorfile$
 end 1
 ' ----------------------------------------------------------------------------
 ' -----------------🐉 Subs and Function beyond this point 🐉-----------------
 ' ----------------------------------------------------------------------------
-'$INCLUDE:'.\ddlib\String.bm'
+'$INCLUDE:'.\ddlib\string.bm'
 '$INCLUDE:'.\test-print.bm'
 '$INCLUDE:'.\test-directory.bm'
+'$INCLUDE:'.\test-file.bm'
 '$INCLUDE:'.\test-path.bm'
 '$INCLUDE:'.\test-string.bm'
