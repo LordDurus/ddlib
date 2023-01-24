@@ -15,6 +15,15 @@ sub file.WriteAllText(path as string, contents as string)
 	close #filehandle
 end sub
 ' ----------------------------------------------------------------------------
+'Append a new line file
+' - @param {string} path The file to write to.
+' - @param {string} contents The string to write to the file.
+sub file.WriteLine(path as string, contents as string)
+	dim filehandle as integer : filehandle = freefile : open path for append as #filehandle
+	print #filehandle, contents
+	close #filehandle
+end sub
+' ----------------------------------------------------------------------------
 ' Determines whether the specified file exists.
 '___
 ' - @param {string} filepath The file to check.
@@ -58,9 +67,9 @@ end function
 ' OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
 ' ___
 ' - @param {string} File to open
-function file.OpenrRndom(filepath as string)
+function file.OpenRandom(filepath as string)
 	dim filehandle as integer : filehandle = freefile : open filepath for random as #filehandle
-	file.openrandom = filehandle
+	file.OpenRandom = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' CLOSE closes an open file or port using the number assigned in an `OPEN` statement.
@@ -79,6 +88,6 @@ sub file.CloseAll
 		close currentfile
 	next
 end sub
-' ----------------------------------------------------------------------------
+
 $end if
 
