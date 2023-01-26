@@ -9,7 +9,7 @@ $let ddlibDirectory = define
 '$Dynamic
 
 ' ----------------------------------------------------------------------------
-' Determines whether the given path refers to an existing directory on disk.
+' #### Determines whether the given path refers to an existing directory on disk.
 '___
 ' - @param {string} path The path to test
 function directory.Exists(path as string)
@@ -20,7 +20,7 @@ function directory.Exists(path as string)
 	end if
 end function
 ' ----------------------------------------------------------------------------
-' Creates a new folder (directory) at a specified path.
+' #### Creates a new folder (directory) at a specified path.
 '___
 ' - @param {string} path The directory to create.
 function directory.CreateDirectory(path as string)
@@ -86,7 +86,7 @@ sub directory.GetAllFiles(path as string, fileArray() as string)
 	kill tmpfile
 	
 end sub
-
+' ----------------------------------------------------------------------------
 
 $end if
 

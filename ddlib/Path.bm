@@ -4,9 +4,10 @@ $if ddlibPath = undefined then
 $let ddlibPath = defined
 
 ' ----------------------------------------------------------------------------
-' Adds a slash (if needed) to a path expression.
+' #### Adds a slash (if needed) to a path expression.
 '___
-' @param {string} path Specifies the path to which to add the slash (checks the operating system)
+' - @param {string} path Specifies the path to which to add the slash (checks the operating system)
+' - @returns {string} A path with a slash at the end.
 function path.AddSlash$(path as string)
 	dim retvalue as string : retvalue = rtrim$(path)
 	dim slash as string * 1 : slash = ""
@@ -21,11 +22,12 @@ function path.AddSlash$(path as string)
 	path.AddSlash$ = retvalue
 end function
 ' ----------------------------------------------------------------------------
-' Changes the slashes based on the operating system
+' #### Changes the slashes based on the operating system
 ' - LINUS & OSX = "/"
 ' - WINDOWS = "\\"
 '___
-' @param {string} path Specifies the path to which to fix the slashs (checks the operating system)
+' - @param {string} path Specifies the path to which to fix the slashs (checks the operating system)
+' - @returns {string} A path with a fixed.
 function path.FixSlashes$(path as string)
 	dim retvalue as string : retvalue = path
 	if instr(_os$,"[WINDOWS]") > 0 then

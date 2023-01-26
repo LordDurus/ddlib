@@ -5,7 +5,7 @@ $if ddlibfile = undefined then
 $let ddlibfile = defined
 
 ' ----------------------------------------------------------------------------
-'Creates a new file, write the contents to the file, and then closes the file. If the target file already exists, it is overwritten.
+' #### Creates a new file, write the contents to the file, and then closes the file. If the target file already exists, it is overwritten.
 '___
 ' - @param {string} path The file to write to.
 ' - @param {string} contents The string to write to the file.
@@ -15,7 +15,7 @@ sub file.WriteAllText(path as string, contents as string)
 	close #filehandle
 end sub
 ' ----------------------------------------------------------------------------
-'Append a new line file
+' #### Append a new line file
 ' - @param {string} path The file to write to.
 ' - @param {string} contents The string to write to the file.
 sub file.AppendLine(path as string, contents as string)
@@ -24,7 +24,7 @@ sub file.AppendLine(path as string, contents as string)
 	close #filehandle
 end sub
 ' ----------------------------------------------------------------------------
-' Determines whether the specified file exists.
+' #### Determines whether the specified file exists.
 '___
 ' - @param {string} filepath The file to check.
 ' - @return Returns TRUE (-1) or FALSE (0).
@@ -37,7 +37,7 @@ function file.Exists(filepath as string)
 	end if
 end function
 ' ----------------------------------------------------------------------------
-' Deletes the specified file.
+' #### Deletes the specified file.
 '____
 ' - @param {string} filepath The name of the file to be deleted. Wildcards * and ? can be used with caution.
 function file.Delete(filepath as string)
@@ -56,7 +56,7 @@ function file.OpenOutput(filepath as string)
 	file.OpenOutput = filehandle
 end function
 ' ----------------------------------------------------------------------------
-' The INPUT file mode in an OPEN statement opens an existing file for INPUT (file statement).
+' #### The INPUT file mode in an OPEN statement opens an existing file for INPUT (file statement).
 '___
 ' ----------------------------------------------------------------------------
 function file.OpenInput(filepath as string)
@@ -64,7 +64,7 @@ function file.OpenInput(filepath as string)
 	file.OpenInput = filehandle
 end function
 ' ----------------------------------------------------------------------------
-' OpenAppend is used in an output type OPEN statement to add data to the end of a file.
+' #### OpenAppend is used in an output type OPEN statement to add data to the end of a file.
 ' ___
 ' - @param {string} filePath File to open
 function file.OpenAppend(filepath as string)
@@ -72,7 +72,7 @@ function file.OpenAppend(filepath as string)
 	file.OpenAppend = filehandle
 end function
 ' ----------------------------------------------------------------------------
-' OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
+' #### OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
 ' ___
 ' - @param {string} filePath File to open
 function file.OpenRandom(filepath as string)
@@ -80,7 +80,7 @@ function file.OpenRandom(filepath as string)
 	file.OpenRandom = filehandle
 end function
 ' ----------------------------------------------------------------------------
-' CLOSE closes an open file or port using the number assigned in an `OPEN` statement.
+' #### CLOSE closes an open file or port using the number assigned in an `OPEN` statement.
 '___
 ' - @param {integer} fileHandle Indicates the file or list of file numbers to close. When not specified, all open files are closed.
 function file.Close(filehandle as integer)
@@ -97,7 +97,7 @@ sub file.CloseAll
 	next
 end sub
 ' ----------------------------------------------------------------------------
-' Retuns the file size in bytes
+' #### Retuns the file size in bytes
 '___
 ' - @param {string} filePath File to check
 ' - @returns {long} The size of the file.  Returns -1 if the file is not found
