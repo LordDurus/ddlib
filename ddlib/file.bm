@@ -18,7 +18,7 @@ end sub
 'Append a new line file
 ' - @param {string} path The file to write to.
 ' - @param {string} contents The string to write to the file.
-sub file.WriteLine(path as string, contents as string)
+sub file.AppendLine(path as string, contents as string)
 	dim filehandle as integer : filehandle = freefile : open path for append as #filehandle
 	print #filehandle, contents
 	close #filehandle
@@ -52,21 +52,29 @@ end function
 '___
 ' - @param {string} File to open
 function file.OpenOutput(filepath as string)
-	dim filehandle as integer : filehandle = freefile : open filepath for output as #filehandle
+	dim filehandle as long : filehandle = freefile : open filepath for output as #filehandle
 	file.OpenOutput = filehandle
+end function
+' ----------------------------------------------------------------------------
+' The INPUT file mode in an OPEN statement opens an existing file for INPUT (file statement).
+'___
+' ----------------------------------------------------------------------------
+function file.OpenInput(filepath as string)
+	dim filehandle as long : filehandle = freefile : open filepath for input as #filehandle
+	file.OpenInput = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' OpenAppend is used in an output type OPEN statement to add data to the end of a file.
 ' ___
-' - @param {string} File to open
+' - @param {string} filePath File to open
 function file.OpenAppend(filepath as string)
-	dim filehandle as integer : filehandle = freefile : open filepath for append as #filehandle
+	dim filehandle as long : filehandle = freefile : open filepath for append as #filehandle
 	file.OpenAppend = filehandle
 end function
 ' ----------------------------------------------------------------------------
 ' OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
 ' ___
-' - @param {string} File to open
+' - @param {string} filePath File to open
 function file.OpenRandom(filepath as string)
 	dim filehandle as integer : filehandle = freefile : open filepath for random as #filehandle
 	file.OpenRandom = filehandle
@@ -88,6 +96,22 @@ sub file.CloseAll
 		close currentfile
 	next
 end sub
-
+' ----------------------------------------------------------------------------
+' Retuns the file size in bytes
+'___
+' - @param {string} filePath File to check
+' - @returns {long} The size of the file.  Returns -1 if the file is not found
+function file.GetSize&(filepath as string)
+	
+	if not _fileexists(filepath) then
+		file.GetSize& = -1
+		exit function
+	end if
+	
+	dim filehandle as integer : filehandle = file.OpenAppend(filepath)
+	file.GetSize& = lof(filehandle)
+	close #filehandle
+	
+end function
 $end if
 

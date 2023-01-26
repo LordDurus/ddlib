@@ -5,6 +5,10 @@ $VersionInfo:LegalCopyright=Durus and Doomfaller
 $VersionInfo:filedescription=ddLib Tester
 $ExeIcon:'./test.ico'
 
+option _explicit
+option _explicitarray
+'$Dynamic
+
 _title "DDLIB Tester"
 on error goto errorhandler
 '$INCLUDE:'.\ddlib\Constants.bi'

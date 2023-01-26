@@ -5,7 +5,7 @@
 			"name": "QB64 Build and Run",
 			"type": "QB64",
 			"request": "launch",
-			"command": "${config:qb64.installPath}\\qb64.exe -c -x \"${workspaceFolder}\\run-tests.bas\" -o \"${workspaceFolder}\\run-tests.exe\" -x; ${workspaceFolder}\\run-tests.exe",
+			"command": "${config:qb64.installPath}\\qb64.exe -c -x \"${workspaceFolder}\\run-tests.bas\" -o \"${workspaceFolder}\\run-tests.exe\" -x;  if ($?) { cd \"${workspaceFolder}\"; start \"${workspaceFolder}\\run-tests.exe\"}",
 			"terminalName": "QB64",
 			"terminalIndex": -1,
 			"showTerminal": true,

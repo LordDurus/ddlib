@@ -1,0 +1,15 @@
+'$INCLUDE:'..\ddlib\string.bm'
+
+$if ddlibInt = undefined then
+$let ddlibInt = defined
+
+' ----------------------------------------------------------------------------
+' Converts the integer value to its equivalent string representation.
+'___
+' - @param {integer} integerValue  A standard or custom numeric format string.
+' - @returns {string} The string representation of the value.
+function int.ToString$(integerValue as integer)
+	int.ToString$ = ltrim$(str$(integerValue))
+end function
+
+$end if

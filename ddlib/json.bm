@@ -1,0 +1,7 @@
+'$INCLUDE:'.\constants.bi'
+
+$if ddlibjson = undefined then
+$let ddlibjson = defined
+
+
+$end if
