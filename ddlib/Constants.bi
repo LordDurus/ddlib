@@ -1,6 +1,8 @@
 $if ddlibConstants = undefined then
 $let ddlibConstants = defined
 
+randomize timer
+
 ' True Value
 '___
 ' - const | datatype: integer | Value -1

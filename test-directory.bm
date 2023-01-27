@@ -1,6 +1,7 @@
 '$INCLUDE:'.\ddlib\constants.bi'
 '$INCLUDE:'.\ddlib\directory.bm'
 '$INCLUDE:'.\ddlib\int.bm'
+'$INCLUDE:'.\ddlib\path.bm'
 '$INCLUDE:'.\test-print.bm'
 ' ----------------------------------------------------------------------------
 function test.GetTestFolder$()
@@ -11,12 +12,13 @@ sub test.Directory
 	call test.Exists
 	call test.Delete
 	call test.CreateDirectory
-	call test.GetAllFiles
+	call test.GetFiles
+	call test.GetFolders
 end sub
 ' ----------------------------------------------------------------------------
 sub test.Exists
 	if instr(_os$,"[WINDOWS]") > 0 then
-		if directory.exists("c:\windows") then
+		if directory.Exists("c:\windows") then
 			print.success("directory.Exists")
 		else
 			print.fail("directory.Exists")
@@ -25,8 +27,8 @@ sub test.Exists
 end sub
 ' ----------------------------------------------------------------------------
 sub test.Delete
-	call directory.delete(test.GetTestFolder$)
-	if directory.exists(test.GetTestFolder$) then
+	call directory.Delete(test.GetTestFolder$)
+	if directory.Exists(test.GetTestFolder$) then
 		print.fail("directory.Delete")
 	else
 		print.success("directory.Delete")
@@ -34,29 +36,49 @@ sub test.Delete
 end sub
 ' ----------------------------------------------------------------------------
 sub test.CreateDirectory
-	if directory.createdirectory(test.GetTestFolder$) then
+	if directory.CreateDirectory(test.GetTestFolder$) then
 		print.success("directory.CreateDirectory")
 	else
 		print.fail("directory.CreateDirectory")
 	end if
 end sub
 ' ----------------------------------------------------------------------------
-sub test.GetAllFiles
+sub test.GetFiles
 	dim filelist(1 to 0) as string
-	call directory.getallfiles("d:\temp\*.", fileList())
+	dim searchFolder as string : searchFolder = path.AddSlash(_cwd$) + "testdata"
+	call directory.GetFiles(searchFolder, filelist(), boolean.FALSE)
 	
-	print "Files Found: " + int.ToString(ubound(filelist))
-	' dim i as integer
-	' for i = 1 to ubound(filelist)
-	' 	if filelist(i) <> string.empty then
-	' 		print filelist(i)
-	' 	end if
-	' next i
-	
-	if ubound(filelist) < 1 then
-		print.fail("directory.GetAllFiles")
-		exit sub
+	if ubound(filelist) <> 4 then
+		print.fail("directory.GetAllFiles - No Subs")
+	else
+		print.success("directory.GetAllFiles - No Subs")
 	end if
 	
-	print.success("directory.GetAllFiles")
+	call directory.GetFiles(searchFolder, filelist(), boolean.TRUE)
+	if ubound(filelist) <> 8 then
+		print.fail("directory.GetAllFiles - Subs")
+	else
+		print.success("directory.GetAllFiles - Subs")
+	end if
+end sub
+' ----------------------------------------------------------------------------
+sub test.GetFolders
+	dim filelist(1 to 0) as string
+	dim searchFolder as string : searchFolder = path.AddSlash(_cwd$) + "testdata"
+	
+	call directory.GetFolders(searchFolder, filelist(), boolean.FALSE)
+	
+	if ubound(filelist) <> 2 then
+		print.fail("directory.GetFolders - No Subs")
+	else
+		print.success("directory.GetFolders - No Subs")
+	end if
+	
+	call directory.GetFolders(searchFolder, filelist(), boolean.TRUE)
+	if ubound(filelist) <> 3 then
+		print.fail("directory.GetFolders - Subs")
+	else
+		print.success("directory.GetFolders - Subs")
+	end if
+	
 end sub

@@ -40,10 +40,11 @@ end function
 ' #### Deletes the specified file.
 '____
 ' - @param {string} filepath The name of the file to be deleted. Wildcards * and ? can be used with caution.
-function file.Delete(filepath as string)
-	kill filepath
-	file.Delete = boolean.true
-end function
+sub file.Delete(filepath as string)
+	if _fileexists(filepath) then
+		kill filepath
+	end if
+end sub
 ' ----------------------------------------------------------------------------
 ' The OUTPUT file mode is used in an OPEN statement to send new data to files.\
 ' OUTPUT mode erases all previous data in an existing file or clears a port receive buffer.\
@@ -51,6 +52,7 @@ end function
 ' Mode can use PRINT (file statement), WRITE (file statement) or PRINT USING (file statement) to output file data.\
 '___
 ' - @param {string} File to open
+' - @return Returns The handle to the open file (LONG).
 function file.OpenOutput(filepath as string)
 	dim filehandle as long : filehandle = freefile : open filepath for output as #filehandle
 	file.OpenOutput = filehandle
@@ -58,7 +60,8 @@ end function
 ' ----------------------------------------------------------------------------
 ' #### The INPUT file mode in an OPEN statement opens an existing file for INPUT (file statement).
 '___
-' ----------------------------------------------------------------------------
+' - @param {string} File to open
+' - @return Returns The handle to the open file (LONG).
 function file.OpenInput(filepath as string)
 	dim filehandle as long : filehandle = freefile : open filepath for input as #filehandle
 	file.OpenInput = filehandle
@@ -67,6 +70,7 @@ end function
 ' #### OpenAppend is used in an output type OPEN statement to add data to the end of a file.
 ' ___
 ' - @param {string} filePath File to open
+' - @return Returns The handle to the open file (LONG).
 function file.OpenAppend(filepath as string)
 	dim filehandle as long : filehandle = freefile : open filepath for append as #filehandle
 	file.OpenAppend = filehandle
@@ -75,6 +79,7 @@ end function
 ' #### OpenRandom is used in an OPEN statement to read(GET) from or write(PUT) to a file.
 ' ___
 ' - @param {string} filePath File to open
+' - @return Returns The handle to the open file (LONG).
 function file.OpenRandom(filepath as string)
 	dim filehandle as integer : filehandle = freefile : open filepath for random as #filehandle
 	file.OpenRandom = filehandle
@@ -102,7 +107,6 @@ end sub
 ' - @param {string} filePath File to check
 ' - @returns {long} The size of the file.  Returns -1 if the file is not found
 function file.GetSize&(filepath as string)
-	
 	if not _fileexists(filepath) then
 		file.GetSize& = -1
 		exit function

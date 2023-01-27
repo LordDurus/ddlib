@@ -3,10 +3,10 @@
 
 '$INCLUDE:'.\constants.bi'
 '$INCLUDE:'.\file.bm'
+'$INCLUDE:'.\path.bm'
 
 $if ddlibDirectory = undefined then
 $let ddlibDirectory = define
-'$Dynamic
 
 ' ----------------------------------------------------------------------------
 ' #### Determines whether the given path refers to an existing directory on disk.
@@ -43,29 +43,56 @@ end sub
 ' #### Returns the names of files that meet specified criteria
 '___
 ' - @param {string} path The relative or absolute path to the directory to search. This string is not case-sensitive.
-' &nbsp;&nbsp;&nbsp;path can use the * and ? wildcard specifications:
-' &nbsp;&nbsp;&nbsp;&nbsp;* denotes one or more wildcard characters in a filename or path specification as any legal file name character(s).<br>
-' &nbsp;&nbsp;&nbsp;&nbsp;? denotes one wildcard letter in a filename or path specification as any legal filename character.
+' path can use the * and ? wildcard specifications:
+' * denotes one or more wildcard characters in a filename or path specification as any legal file name character(s).
+' ? denotes one wildcard letter in a filename or path specification as any legal filename character.
 '
 ' - @param {string} path Search path.
 ' - @param {string array} Array to put files in
-sub directory.GetAllFiles(path as string, fileArray() as string)
-	dim tmpfile as string : tmpfile = "ddlib-dir$inf0temp.inf"
-	dim listMAX as integer : listMAX = 2000 'change maximum to suit your needs
-	dim size as long : size = long.EMPTY
+sub directory.GetFiles(path as string, fileArray() as string, includeSubFolders as integer)
+	dim shellCommand as string : shellCommand = string.EMPTY
+	if instr(_os$,"[WINDOWS]") > 0 then
+		if includeSubFolders = boolean.TRUE then
+			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/s/b/d/a:-d"
+		else
+			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/b/d/a:-d"
+		end if
+	else
+		shellCommand = "ls -l " + path.AddSlash(path) + " /b"
+	end if
+	
+	call directory.RunDirToFileAndLoadArray(shellCommand, fileArray())
+	
+end sub
+' ----------------------------------------------------------------------------
+sub directory.GetFolders(path as string, fileArray() as string, includeSubFolders as integer)
+	
+	dim shellCommand as string : shellCommand = string.EMPTY
+	if instr(_os$,"[WINDOWS]") > 0 then
+		if includeSubFolders = boolean.TRUE then
+			shellCommand = "dir " + path.AddSlash(path$) + "*. /on/b/s"
+		else
+			shellCommand = "dir " + path.AddSlash(path$) + "*. /on/b"
+		end if
+	else
+		shellCommand = "ls -l " + path$ + " /b "
+	end if
+	
+	call directory.RunDirToFileAndLoadArray(shellCommand, fileArray())
+	
+end sub
+' ----------------------------------------------------------------------------
+' Interal sub to load a temp file with files or folders the read the file.
+sub directory.RunDirToFileAndLoadArray(shellCommand as string, fileArray() as string)
 	
 	redim	fileArray(1 to 0)
-	if path = string.EMPTY then
+	if shellCommand = string.EMPTY then
 		exit sub
 	end if
 	
-	dim count as integer : count = 0
-	dim fileHandle as long : fileHandle = long.EMPTY
-	if instr(_os$,"[WINDOWS]") > 0 then
-		shell _hide "dir " + path$ + " /b > " + tmpFile
-	else
-		shell _hide "ls -l " + path$ + " /b > " + tmpFile
-	end if
+	dim listMAX as integer : listMAX = 2000 'change maximum to suit your needs
+	dim tmpfile as string : tmpfile = "ddlib-dir$inf" + ltrim$(str$(rnd)) + ".tmp" ' Test RND
+	shell _hide shellCommand + " > " + tmpfile
 	
 	if file.GetSize(tmpfile) = long.EMPTY then
 		redim	fileArray(1 to 0)
@@ -73,20 +100,19 @@ sub directory.GetAllFiles(path as string, fileArray() as string)
 		exit sub
 	end if
 	
+	dim fileHandle as long : fileHandle = file.OpenInput(tmpfile)
+	dim count as integer : count = 0
 	redim fileArray(listMAX)
-	fileHandle = file.OpenInput(tmpfile)
-	
 	do while not eof(fileHandle) and count < listMAX
 		count = count + 1
 		input #fileHandle, fileArray(count)
 	loop
 	
 	redim _preserve fileArray(count)
-	close fileHandle
-	kill tmpfile
+	if file.Close(fileHandle) then
+		file.Delete(tmpfile)
+	end if
 	
 end sub
-' ----------------------------------------------------------------------------
 
 $end if
-
