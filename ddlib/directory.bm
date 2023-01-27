@@ -53,9 +53,9 @@ sub directory.GetFiles(path as string, fileArray() as string, includeSubFolders 
 	dim shellCommand as string : shellCommand = string.EMPTY
 	if instr(_os$,"[WINDOWS]") > 0 then
 		if includeSubFolders = boolean.TRUE then
-			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/s/b/d/a:-d"
+			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/s/b/d/a-d"
 		else
-			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/b/d/a:-d"
+			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/b/d/a-d"
 		end if
 	else
 		shellCommand = "ls -l " + path.AddSlash(path) + " /b"
@@ -70,12 +70,12 @@ sub directory.GetFolders(path as string, fileArray() as string, includeSubFolder
 	dim shellCommand as string : shellCommand = string.EMPTY
 	if instr(_os$,"[WINDOWS]") > 0 then
 		if includeSubFolders = boolean.TRUE then
-			shellCommand = "dir " + path.AddSlash(path$) + "*. /on/b/s"
+			shellCommand = "dir " + path.AddSlash(path$) + "*.* /on/b/s/AD"
 		else
-			shellCommand = "dir " + path.AddSlash(path$) + "*. /on/b"
+			shellCommand = "dir " + path.AddSlash(path$) + "*.* /on/b/AD"
 		end if
 	else
-		shellCommand = "ls -l " + path$ + " /b "
+		shellCommand = "ls -l --sort=time --reverse --color=always --time-style=long-iso --group-directories-first --recursive --all --directory " + path
 	end if
 	
 	call directory.RunDirToFileAndLoadArray(shellCommand, fileArray())
