@@ -39,8 +39,7 @@ sub directory.Delete(path as string)
 	end if
 end sub
 ' ----------------------------------------------------------------------------
-'___
-' #### Returns the names of files that meet specified criteria
+' #### Returns the names of files in the given path
 '___
 ' - @param {string} path The relative or absolute path to the directory to search. This string is not case-sensitive.
 ' path can use the * and ? wildcard specifications:
@@ -49,7 +48,9 @@ end sub
 '
 ' - @param {string} path Search path.
 ' - @param {string array} Array to put files in
+' - @param {integer} includeSubFolders (-1 true | 0 false)
 sub directory.GetFiles(path as string, fileArray() as string, includeSubFolders as integer)
+	
 	dim shellCommand as string : shellCommand = string.EMPTY
 	if instr(_os$,"[WINDOWS]") > 0 then
 		if includeSubFolders = boolean.TRUE then
@@ -69,6 +70,11 @@ sub directory.GetFiles(path as string, fileArray() as string, includeSubFolders 
 	
 end sub
 ' ----------------------------------------------------------------------------
+' #### Returns the names of folders in the given path
+'___
+' - @param {string} path Search path.
+' - @param {string array} Array to put files in
+' - @param {integer} includeSubFolders (-1 true | 0 false)
 sub directory.GetFolders(path as string, fileArray() as string, includeSubFolders as integer)
 	
 	dim shellCommand as string : shellCommand = string.EMPTY
@@ -99,7 +105,7 @@ sub directory.RunDirToFileAndLoadArray(shellCommand as string, fileArray() as st
 	end if
 	
 	dim listMAX as integer : listMAX = 2000 'change maximum to suit your needs
-	dim tmpfile as string : tmpfile = "ddlib-dir$inf" + ltrim$(str$(rnd)) + ".tmp" ' Test RND
+	dim tmpfile as string : tmpfile = "ddlib-dir$inf" + ltrim$(str$(rnd)) + ".tmp"
 	if instr(_os$,"[WINDOWS]") > 0 then
 		shell _hide shellCommand + " > " + tmpfile
 	else
