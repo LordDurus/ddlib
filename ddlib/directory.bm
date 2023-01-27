@@ -58,7 +58,11 @@ sub directory.GetFiles(path as string, fileArray() as string, includeSubFolders 
 			shellCommand = "dir " + path.AddSlash(path) + "*.* /on/b/d/a-d"
 		end if
 	else
-		shellCommand = "ls -l " + path.AddSlash(path) + " /b"
+		if includeSubFolders = boolean.TRUE then
+			shellCommand = "ls -l --sort=timname --color=always --time-style=long-iso --recursive --all --file " + path
+		else
+			shellCommand = "ls -l --sort=timname --color=always --time-style=long-iso --all --file " + path
+		end if
 	end if
 	
 	call directory.RunDirToFileAndLoadArray(shellCommand, fileArray())
@@ -75,7 +79,11 @@ sub directory.GetFolders(path as string, fileArray() as string, includeSubFolder
 			shellCommand = "dir " + path.AddSlash(path$) + "*.* /on/b/AD"
 		end if
 	else
-		shellCommand = "ls -l --sort=time --reverse --color=always --time-style=long-iso --group-directories-first --recursive --all --directory " + path
+		if includeSubFolders = boolean.TRUE then
+			shellCommand = "ls -l --sort=name --color=always --time-style=long-iso --group-directories-first --recursive --all --directory " + path
+		else
+			shellCommand = "ls -l --sort=name --color=always --time-style=long-iso --group-directories-first --all --directory " + path
+		end if
 	end if
 	
 	call directory.RunDirToFileAndLoadArray(shellCommand, fileArray())
@@ -92,7 +100,11 @@ sub directory.RunDirToFileAndLoadArray(shellCommand as string, fileArray() as st
 	
 	dim listMAX as integer : listMAX = 2000 'change maximum to suit your needs
 	dim tmpfile as string : tmpfile = "ddlib-dir$inf" + ltrim$(str$(rnd)) + ".tmp" ' Test RND
-	shell _hide shellCommand + " > " + tmpfile
+	if instr(_os$,"[WINDOWS]") > 0 then
+		shell _hide shellCommand + " > " + tmpfile
+	else
+		shell _hide shellCommand + " < " + tmpfile
+	end if
 	
 	if file.GetSize(tmpfile) = long.EMPTY then
 		redim	fileArray(1 to 0)
