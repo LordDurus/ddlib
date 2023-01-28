@@ -73,6 +73,13 @@ ___
 Retuns the file size in bytes
 - parameter 1 {string} filePath File to check
 - Returns {long} The size of the file.  Returns -1 if the file is not found
+___
+## Int functions and subroutines
+### int.ToString$(integerValue as integer)
+Converts the integer value to its equivalent string representation.
+- parameter 1 {integer} integerValue  A standard or custom numeric format string.
+- Returns {string} The string representation of the value.
+___
 ### Miscellaneous
 'randomize timer' is enabled in the constants.bm
  ___

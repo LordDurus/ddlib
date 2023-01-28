@@ -1,6 +1,5 @@
 ' See https://qb64.com/wiki/FILES for details on get directory.GetAllFiles
 
-
 '$INCLUDE:'.\constants.bi'
 '$INCLUDE:'.\file.bm'
 '$INCLUDE:'.\path.bm'
