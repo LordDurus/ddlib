@@ -4,6 +4,7 @@
 '$INCLUDE:'.\constants.bi'
 '$INCLUDE:'.\file.bm'
 '$INCLUDE:'.\path.bm'
+'$INCLUDE:'.\string.bm'
 
 $if ddlibDirectory = undefined then
 $let ddlibDirectory = define
@@ -39,13 +40,31 @@ sub directory.Delete(path as string)
 	end if
 end sub
 ' ----------------------------------------------------------------------------
-' #### Returns the names of files in the given path
+' #### Returns the names of files in the given search command
 '___
-' - @param {string} path The relative or absolute path to the directory to search. This string is not case-sensitive.
-' path can use the * and ? wildcard specifications:
-' * denotes one or more wildcard characters in a filename or path specification as any legal file name character(s).
+' - @param {string} searchCommand Any valid ls or dir command. Must in include the /b (or Linux/MacOs equivalent)
+'
+' \* denotes one or more wildcard characters in a filename or path specification as any legal file name character(s).
+'
 ' ? denotes one wildcard letter in a filename or path specification as any legal filename character.
 '
+' - @param {string array} Array to put files in
+' - @param {integer} includeSubFolders (-1 true | 0 false)
+sub directory.Search(searchCommand as string, fileArray() as string)
+	if instr(_os$,"[WINDOWS]") > 0 then
+		if not string.StartsWith(lcase$(searchCommand), "dir") then
+			error 75
+		end if
+	else
+		if not string.StartsWith(lcase$(searchCommand), "ls") then
+			error 75
+		end if
+	end if
+	call directory.RunDirToFileAndLoadArray(searchCommand, fileArray())
+end sub
+' ----------------------------------------------------------------------------
+' #### Returns the names of files in the given path
+'___
 ' - @param {string} path Search path.
 ' - @param {string array} Array to put files in
 ' - @param {integer} includeSubFolders (-1 true | 0 false)
