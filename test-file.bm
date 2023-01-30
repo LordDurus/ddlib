@@ -8,8 +8,14 @@ $let ddblibFile = define
 
 ' ----------------------------------------------------------------------------
 sub test.File
-	
+	call test.SetCreatedOnAndLastWrite
 end sub
 ' ----------------------------------------------------------------------------
+sub test.SetCreatedOnAndLastWrite
+	dim filename as string : filename = path.AddSlash(path.AddSlash(_cwd$) + "testdata") + "f1.txt"
+	call file.SetCreatedOnAndLastWrite(filename, date$ + " " + time$)
+	' Todo add file.GetCreatedon / get.LastWrite
+	print.success("file.SetCreatedOnAndLastWrite")
+end sub
 
 $end if

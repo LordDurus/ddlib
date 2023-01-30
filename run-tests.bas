@@ -7,7 +7,14 @@ $ExeIcon:'./test.ico'
 
 option _explicit
 option _explicitarray
+option base 1
 '$Dynamic
+
+'$Console
+'_console off 'close original console
+'_console on
+'_dest _console
+
 
 _title "DDLIB Tester"
 on error goto errorhandler

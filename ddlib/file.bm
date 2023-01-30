@@ -115,7 +115,47 @@ function file.GetSize&(filepath as string)
 	dim filehandle as integer : filehandle = file.OpenAppend(filepath)
 	file.GetSize& = lof(filehandle)
 	close #filehandle
-	
 end function
+' ----------------------------------------------------------------------------
+' #### Set the creation timestame
+' ##### This needs PowerShell installed
+'___
+' - @param {string} filePath File to check
+' - @returns {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
+sub file.SetCreatedOn(filepath as string, dateTime as string)
+	if not _fileexists(filepath) then
+		error 53
+	end if
+	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').CreationTime = ('" + dateTime + "') " + chr$(34)
+	shell _hide shellCommand
+end sub
+' ----------------------------------------------------------------------------
+' #### Change the last write timestame
+' ##### This needs PowerShell installed
+'___
+' - @param {string} filePath File to check
+' - @param {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
+sub file.SetLastWrite(filepath as string, dateTime as string)
+	if not _fileexists(filepath) then
+		error 53
+	end if
+	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').LastWriteTime = ('" + dateTime + "') " + chr$(34)
+	shell _hide shellCommand
+end sub
+' ----------------------------------------------------------------------------
+' #### Set both the createdon and the last write timestamp of a file.
+' ##### This needs PowerShell installed
+'___
+' - @param {string} filePath File to check
+' - @param {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
+sub file.SetCreatedOnAndLastWrite(filepath as string, dateTime as string)
+	call file.SetCreatedOn(filepath, dateTime)
+	call file.SetLastWrite(filepath, dateTime)
+end sub
+' ----------------------------------------------------------------------------
+
+' Use this for getting the createdon / lastwrite / lastaccess
+' https://www.winhelponline.com/blog/change-accessed-modified-created-file-date-timestamp-windows/
+
 $end if
 
