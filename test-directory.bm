@@ -1,5 +1,5 @@
 '$INCLUDE:'.\ddlib\constants.bi'
-'$INCLUDE:'.\ddlib\libary.bm'
+'$INCLUDE:'.\ddlib\library.bm'
 '$INCLUDE:'.\test-print.bm'
 ' ----------------------------------------------------------------------------
 function test.GetTestFolder$()

@@ -28,7 +28,7 @@ end 1
 ' ----------------------------------------------------------------------------
 ' -----------------🐉 Subs and Function beyond this point 🐉-----------------
 ' ----------------------------------------------------------------------------
-'$INCLUDE:'.\ddlib\libary.bm'
+'$INCLUDE:'.\ddlib\library.bm'
 '$INCLUDE:'.\test-print.bm'
 '$INCLUDE:'.\test-directory.bm'
 '$INCLUDE:'.\test-file.bm'
