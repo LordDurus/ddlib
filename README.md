@@ -1,5 +1,9 @@
 # ddlib Basic Library - for QB64 and variants
 
+## How to use
+Add `constants.bi` to the top of your main code file.
+Add `libary.bm` at the beginning of your fucntion/sub arae/
+___
 ## Path functions and subroutines
 The path.AddSlash a slash (if needed) to a path expression.
 parameter 1 {string} path Specifies the path to which to add the slash (checks the operating system)

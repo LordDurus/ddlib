@@ -1,0 +1,9 @@
+$if ddblibLLibrary = undefined then
+$let ddblibLLibrary = define
+
+'$INCLUDE:'.\directory.bm'
+'$INCLUDE:'.\int.bm'
+'$INCLUDE:'.\path.bm'
+'$INCLUDE:'.\string.bm'
+
+$end if

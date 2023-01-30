@@ -1,6 +1,6 @@
 
-'$INCLUDE:'.\ddlib\Constants.bi'
-'$INCLUDE:'.\ddlib\Path.bm'
+'$INCLUDE:'.\ddlib\constants.bi'
+'$INCLUDE:'.\ddlib\libary.bm'
 '$INCLUDE:'.\test-print.bm'
 ' ----------------------------------------------------------------------------
 sub test.Path
