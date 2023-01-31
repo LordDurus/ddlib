@@ -21,12 +21,11 @@ end function
 ' #### Creates a new folder (directory) at a specified path.
 '___
 ' - @param {string} path The directory to create.
-function directory.CreateDirectory(path as string)
+sub directory.CreateDirectory(path as string)
 	if not directory.Exists(path) then
 		mkdir path
 	end if
-	directory.CreateDirectory = directory.Exists(path)
-end function
+end sub
 ' ----------------------------------------------------------------------------
 ' #### Deletes an empty directory using a designated path relative to the present path location.
 '___
