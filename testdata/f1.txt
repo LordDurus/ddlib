@@ -1,0 +1,13 @@
+[32;1mName     CreationTime        LastWriteTime        LastAccessTime[0m
+[32;1m----     ------------        -------------        --------------[0m
+log1.txt 8/3/2017 5:00:00 PM 1/30/2023 1:03:54 PM 1/30/2023 1:03:54 PM
+
+
+code = code
+	.replaceAll(/get\s*-\s*item/ig, "Get-Item")
+	.replaceAll(/pwsh\s*-\s*command/ig, "pwsh -command")
+	.replaceAll(/pwsh\s*-\s*command/ig, "pwsh -command")
+	.replaceAll(/pwsh\s*-\s*command/ig, "pwsh -command")
+	.replaceAll("@ { name = ", "@{name=")
+	.replaceAll("'MM / dd / yyyy hh : mm : ss tt'", "'MM/dd/yyyy hh:mm:ss tt'")
+	.replace("Get - ChildItem-force-path '", "Get-ChildItem -force -path '")

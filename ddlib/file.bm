@@ -1,5 +1,7 @@
 
 '$INCLUDE:'.\constants.bi'
+'$INCLUDE:'.\path.bm'
+'$INCLUDE:'.\string.bm'
 
 $if ddlibfile = undefined then
 $let ddlibfile = defined
@@ -29,11 +31,11 @@ end sub
 ' - @param {string} filepath The file to check.
 ' - @return Returns TRUE (-1) or FALSE (0).
 function file.Exists(filepath as string)
-	file.Exists = boolean.false
+	file.Exists = boolean.FALSE
 	if _fileexists(filepath) then
-		file.Exists = boolean.true
+		file.Exists = boolean.TRUE
 	else
-		file.Exists = boolean.false
+		file.Exists = boolean.FALSE
 	end if
 end function
 ' ----------------------------------------------------------------------------
@@ -90,7 +92,7 @@ end function
 ' - @param {integer} fileHandle Indicates the file or list of file numbers to close. When not specified, all open files are closed.
 function file.Close(filehandle as integer)
 	close filehandle
-	file.Close = boolean.true
+	file.Close = boolean.TRUE
 end function
 ' ----------------------------------------------------------------------------
 ' Closes all open files.
@@ -122,12 +124,12 @@ end function
 '___
 ' - @param {string} filePath File to check
 ' - @returns {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
-sub file.SetCreatedOn(filepath as string, dateTime as string)
+sub file.SetCreatedOn(filepath as string, datetime as string)
 	if not _fileexists(filepath) then
 		error 53
 	end if
-	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').CreationTime = ('" + dateTime + "') " + chr$(34)
-	shell _hide shellCommand
+	dim shellcommand as string : shellcommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').creationtime = ('" + datetime + "') " + chr$(34)
+	shell _hide shellcommand
 end sub
 ' ----------------------------------------------------------------------------
 ' #### Change the last write timestame
@@ -135,12 +137,12 @@ end sub
 '___
 ' - @param {string} filePath File to check
 ' - @param {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
-sub file.SetLastWrite(filepath as string, dateTime as string)
+sub file.SetLastWrite(filepath as string, datetime as string)
 	if not _fileexists(filepath) then
 		error 53
 	end if
-	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').LastWriteTime = ('" + dateTime + "') " + chr$(34)
-	shell _hide shellCommand
+	dim shellcommand as string : shellcommand = "pwsh -command " + chr$(34) + "(Get-Item '" + filepath + "').lastwritetime = ('" + datetime + "') " + chr$(34)
+	shell _hide shellcommand
 end sub
 ' ----------------------------------------------------------------------------
 ' #### Set both the createdon and the last write timestamp of a file.
@@ -148,58 +150,76 @@ end sub
 '___
 ' - @param {string} filePath File to check
 ' - @param {string} dateTime Date and time - format mm/dd/yyyy HH:MM:SS (08/03/2017 17:00:00)
-sub file.SetCreatedOnAndLastWrite(filepath as string, dateTime as string)
-	call file.SetCreatedOn(filepath, dateTime)
-	call file.SetLastWrite(filepath, dateTime)
+sub file.SetCreatedOnAndLastWrite(filepath as string, datetime as string)
+	call file.SetCreatedOn(filepath, datetime)
+	call file.SetLastWrite(filepath, datetime)
 end sub
 ' ----------------------------------------------------------------------------
 ' #### Gets a file's info
 ' ##### This needs PowerShell installed
 ' - @param {string} filePath File to check
 ' - @param {FileInfo} fi FileInfo type to load my referance
-function file.GetFileInfo(filepath as string, fi as FileInfo)
-	
+sub file.GetFileInfo(filepath as string, fi as fileinfo)
 	' Use this for getting the createdon / lastwrite / lastaccess
 	' https://www.winhelponline.com/blog/change-accessed-modified-created-file-date-timestamp-windows/
 	
-	dim tmpfile as string : tmpfile = "ddlib-fi$inf" + ltrim$(str$(rnd)) + ".tmp"
-	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "Get-ChildItem -force -path '" + filepath + "' | select-Object Name, @{name='CreationTime';expression = { $_.CreationTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, @{name='LastWriteTime';expression = { $_.LastWriteTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, @{name='LastAccessTime';expression = { $_.LastAccessTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, Length, Mode" + chr$(34) + " > " + tmpfile
-	dim work as string : work = string.EMPTY
-	dim filehandle as long : filehandle = file.OpenInput(tmpfile)
-	do while not eof(filehandle)
-		'count = count + 1
-		input #filehandle, work
-		
-		if instr(work, "CreationTime") > 0 then
-			fi.CreationTime = file.Interal_GetFIValue(work)
-		elseif instr(work, "LastWriteTime") > 0 then
-			fi.LastWriteTime = file.Interal_GetFIValue(work)
-		elseif instr(work, "LastAccessTime") > 0 then
-			fi.LastAccessTime = file.Interal_GetFIValue(work)
-		elseif instr(work, "Length") > 0 then
-			fi.Length = val(file.Interal_GetFIValue(work))
-		elseif instr(work, "Mode") > 0 then
-			fi.Mode = file.Interal_GetFIValue(work)
-		end if
-	loop
+	fi.name = path.GetFileName(filepath)
+	fi.location = filepath
+	fi.creationtime = string.empty
+	fi.lastwritetime = string.empty
+	fi.lastaccesstime = string.empty
+	fi.size = 0
+	fi.attributes = "-----"
 	
-	call file.Delete(tmpfile)
-end function
+	if not file.Exists(filepath) then
+		fi.Exists = boolean.FALSE
+		exit function
+	end if
+	fi.Exists = boolean.TRUE
+	
+	dim tmpfile as string : tmpfile = path.AddSlash(_cwd$) + "fi-inf" + ltrim$(str$(rnd)) + ".tmp"
+	dim shellcommand as string : shellcommand = "pwsh -command " + chr$(34) + "Get-ChildItem -force -path '" + filepath + "' | select-object name, @{name='CreationTime';expression = { $_.CreationTime.ToString('MM-dd-yyyy HH:mm:ss') } }, @{name='LastWriteTime';expression = { $_.LastWriteTime.ToString('MM-dd-yyyy HH:mm:ss') } }, @{name='LastAccessTime';expression = { $_.LastAccessTime.ToString('MM-dd-yyyy HH:mm:ss tt') } }, length, mode > " + tmpfile
+	shell _hide shellcommand
+	
+	if file.Exists(tmpfile) then
+		
+		dim work as string : work = string.empty
+		dim filehandle as long : filehandle = file.OpenInput(tmpfile)
+		do while not eof(filehandle)
+			input #filehandle, work
+			if instr(work, "CreationTime") > 0 then
+				fi.creationtime = file.interal_getfivalue(work)
+				
+			elseif instr(work, "LastWriteTime") > 0 then
+				fi.lastwritetime = file.interal_getfivalue(work)
+				
+			elseif instr(work, "LastAccessTime") > 0 then
+				fi.lastaccesstime = file.interal_getfivalue(work)
+				
+			elseif instr(work, "Length") > 0 then
+				fi.size = val(file.interal_getfivalue(work))
+				
+			elseif instr(work, "Mode") > 0 then
+				fi.attributes = ucase$(file.interal_getfivalue(work))
+			end if
+		loop
+		if file.Close(filehandle) then
+			call file.Delete(tmpfile)
+		end if
+	end if
+	
+end sub
 ' ----------------------------------------------------------------------------
 ' Interal To get value from
 ' - @param {string} fiLine String that contains the value to parse
-function file.Interal_GetFIValue$(fiLine as string)
-	file.Interal_GetFIValue = string.EMPTY
-	if fiLine = string.EMPTY then
+function file.interal_getfivalue$(filine as string)
+	file.interal_getfivalue = string.empty
+	if filine = string.empty or len(filine) < 17 then
 		exit function
 	end if
-	dim spot as integer : spot = instr(fiLine, ":")
-	if spot < 1 then
-		exit function
-	end if
-	file.Interal_GetFIValue = string.AllTrim(mid$(fiLine, spot))
+	file.interal_getfivalue = string.alltrim(mid$(filine, 17))
 end function
-
+' ----------------------------------------------------------------------------
 
 $end if
 

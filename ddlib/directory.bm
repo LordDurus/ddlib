@@ -123,7 +123,7 @@ sub directory.Interal_LoadFileArray(shellCommand as string, fileArray() as strin
 	end if
 	
 	dim listMAX as integer : listMAX = 2000 'change maximum to suit your needs
-	dim tmpfile as string : tmpfile = "ddlib-dir$inf" + ltrim$(str$(rnd)) + ".tmp"
+	dim tmpfile as string : tmpfile = "ddlib-dir-inf" + ltrim$(str$(rnd)) + ".tmp"
 	if instr(_os$,"[WINDOWS]") > 0 then
 		shell _hide shellCommand + " > " + tmpfile
 	else

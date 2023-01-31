@@ -28,12 +28,24 @@ const long.EMPTY& = 0
 const int.EMPTY = 0
 ' ----------------------------------------------------------------------------
 ' File information
+' type FileInfo
+' 	CreationTime as string * 22
+' 	LastWriteTime as string * 22
+' 	LastAccessTime as string * 22
+' 	IsFound as integer
+' 	Length as long
+' 	Mode as string * 5
+' 	Name as string * 260
+' end type
 type FileInfo
-	CreationTime as string * 22
-	LastWriteTime as string * 22
-	LastAccessTime as string * 22
-	Length as long
-	Mode as string * 5
+	Attributes as string
+	CreationTime as string
+	LastWriteTime as string
+	LastAccessTime as string
+	Exists as integer
+	Size as long
+	name as string
+	Location as string
 end type
 ' ----------------------------------------------------------------------------
 

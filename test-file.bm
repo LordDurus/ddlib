@@ -5,7 +5,6 @@ $let ddblibFile = define
 '$INCLUDE:'.\ddlib\library.bm'
 '$INCLUDE:'.\test-print.bm'
 
-
 ' ----------------------------------------------------------------------------
 sub test.File
 	call test.SetCreatedOnAndLastWrite
@@ -13,9 +12,45 @@ end sub
 ' ----------------------------------------------------------------------------
 sub test.SetCreatedOnAndLastWrite
 	dim filename as string : filename = path.AddSlash(path.AddSlash(_cwd$) + "testdata") + "f1.txt"
-	call file.SetCreatedOnAndLastWrite(filename, date$ + " " + time$)
+	dim datetime as string : datetime = date$ + " " + time$
+	call file.SetCreatedOnAndLastWrite(filename, datetime)
 	' Todo add file.GetCreatedon / get.LastWrite
-	print.success("file.SetCreatedOnAndLastWrite")
+	print.Success("file.SetCreatedOnAndLastWrite")
+	
+	dim fi as FileInfo
+	call file.GetFileInfo(filename, fi)
+	
+	if fi.Name <> "f1.txt" then
+		print.Fail("file.GetFileInfo - Name")
+		print "  fi.Name = " + fi.Name
+		print "  filename = " + filename
+		
+	elseif not fi.Exists then
+		print.Fail("file.GetFileInfo - Exists")
+		print "  File " + filename + "Not Found"
+		
+	elseif fi.Size <> 645 then
+		print.Fail("file.GetFileInfo - Size")
+		print "  Found:" + str$(fi.Size)
+		print "  Looking for: 645"
+		
+	elseif fi.CreationTime <> datetime then
+		print.Fail("file.GetFileInfo - CreationTime")
+		print "  Found:" + fi.CreationTime
+		print "  Looking for: " + datetime
+		
+	elseif fi.LastWriteTime <> datetime then
+		print "  Found:" + fi.LastWriteTime
+		print "  Looking for: " + datetime
+		
+	elseif fi.Attributes <> "-A---" then
+		print.Fail("fi.GetFileInfo - Mode")
+		
+	else
+		print.Success("file.GetFileInfo")
+	end if
+	
 end sub
+' ----------------------------------------------------------------------------
 
 $end if

@@ -2,6 +2,7 @@ $if ddblibLLibrary = undefined then
 $let ddblibLLibrary = define
 
 '$INCLUDE:'.\directory.bm'
+'$INCLUDE:'.\file.bm'
 '$INCLUDE:'.\int.bm'
 '$INCLUDE:'.\path.bm'
 '$INCLUDE:'.\string.bm'
