@@ -1,10 +1,10 @@
+$if ddblibFile = undefined then
+$let ddblibFile = define
 
 '$INCLUDE:'.\ddlib\constants.bi'
 '$INCLUDE:'.\ddlib\library.bm'
 '$INCLUDE:'.\test-print.bm'
 
-$if ddblibFile = undefined then
-$let ddblibFile = define
 
 ' ----------------------------------------------------------------------------
 sub test.File

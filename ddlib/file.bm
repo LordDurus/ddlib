@@ -153,9 +153,53 @@ sub file.SetCreatedOnAndLastWrite(filepath as string, dateTime as string)
 	call file.SetLastWrite(filepath, dateTime)
 end sub
 ' ----------------------------------------------------------------------------
+' #### Gets a file's info
+' ##### This needs PowerShell installed
+' - @param {string} filePath File to check
+' - @param {FileInfo} fi FileInfo type to load my referance
+function file.GetFileInfo(filepath as string, fi as FileInfo)
+	
+	' Use this for getting the createdon / lastwrite / lastaccess
+	' https://www.winhelponline.com/blog/change-accessed-modified-created-file-date-timestamp-windows/
+	
+	dim tmpfile as string : tmpfile = "ddlib-fi$inf" + ltrim$(str$(rnd)) + ".tmp"
+	dim shellCommand as string : shellCommand = "pwsh -command " + chr$(34) + "Get-ChildItem -force -path '" + filepath + "' | select-Object Name, @{name='CreationTime';expression = { $_.CreationTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, @{name='LastWriteTime';expression = { $_.LastWriteTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, @{name='LastAccessTime';expression = { $_.LastAccessTime.ToString('MM/dd/yyyy hh:mm:ss tt') } }, Length, Mode" + chr$(34) + " > " + tmpfile
+	dim work as string : work = string.EMPTY
+	dim filehandle as long : filehandle = file.OpenInput(tmpfile)
+	do while not eof(filehandle)
+		'count = count + 1
+		input #filehandle, work
+		
+		if instr(work, "CreationTime") > 0 then
+			fi.CreationTime = file.Interal_GetFIValue(work)
+		elseif instr(work, "LastWriteTime") > 0 then
+			fi.LastWriteTime = file.Interal_GetFIValue(work)
+		elseif instr(work, "LastAccessTime") > 0 then
+			fi.LastAccessTime = file.Interal_GetFIValue(work)
+		elseif instr(work, "Length") > 0 then
+			fi.Length = val(file.Interal_GetFIValue(work))
+		elseif instr(work, "Mode") > 0 then
+			fi.Mode = file.Interal_GetFIValue(work)
+		end if
+	loop
+	
+	call file.Delete(tmpfile)
+end function
+' ----------------------------------------------------------------------------
+' Interal To get value from
+' - @param {string} fiLine String that contains the value to parse
+function file.Interal_GetFIValue$(fiLine as string)
+	file.Interal_GetFIValue = string.EMPTY
+	if fiLine = string.EMPTY then
+		exit function
+	end if
+	dim spot as integer : spot = instr(fiLine, ":")
+	if spot < 1 then
+		exit function
+	end if
+	file.Interal_GetFIValue = string.AllTrim(mid$(fiLine, spot))
+end function
 
-' Use this for getting the createdon / lastwrite / lastaccess
-' https://www.winhelponline.com/blog/change-accessed-modified-created-file-date-timestamp-windows/
 
 $end if
 

@@ -1,4 +1,7 @@
 
+$if ddblibPath = undefined then
+$let ddblibPath = define
+
 '$INCLUDE:'.\ddlib\constants.bi'
 '$INCLUDE:'.\ddlib\library.bm'
 '$INCLUDE:'.\test-print.bm'
@@ -40,3 +43,5 @@ sub test.FixSlashes
 	end if
 end sub
 ' ----------------------------------------------------------------------------
+
+$end if

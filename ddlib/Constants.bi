@@ -26,5 +26,15 @@ const long.EMPTY& = 0
 '___
 ' - const | datatype: integer | Value ""
 const int.EMPTY = 0
+' ----------------------------------------------------------------------------
+' File information
+type FileInfo
+	CreationTime as string * 22
+	LastWriteTime as string * 22
+	LastAccessTime as string * 22
+	Length as long
+	Mode as string * 5
+end type
+' ----------------------------------------------------------------------------
 
 $end if
